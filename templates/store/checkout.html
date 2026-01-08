@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <h2 class="mb-4"><i class="bi bi-credit-card"></i> Checkout</h2>
+    
+    <form method="post" id="checkout-form">
+      {% csrf_token %}
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5><i class="bi bi-person"></i> Contact Information</h5>
+          <hr>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="full_name" class="form-label">Full Name *</label>
+              <input type="text" class="form-control" id="full_name" name="full_name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="phone" class="form-label">Phone Number *</label>
+              <input type="tel" class="form-control" id="phone" name="phone" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5><i class="bi bi-geo-alt"></i> Shipping Address</h5>
+          <hr>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="address" class="form-label">Street Address *</label>
+              <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="city" class="form-label">City *</label>
+              <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="postal_code" class="form-label">Postal Code *</label>
+              <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5><i class="bi bi-credit-card-2-front"></i> Payment Method</h5>
+          <hr>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
+            <label class="form-check-label" for="cod">
+              <i class="bi bi-cash"></i> Cash on Delivery
+            </label>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="payment_method" id="card" value="card">
+            <label class="form-check-label" for="card">
+              <i class="bi bi-credit-card"></i> Credit/Debit Card (Coming Soon)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="payment_method" id="upi" value="upi">
+            <label class="form-check-label" for="upi">
+              <i class="bi bi-phone"></i> UPI (Coming Soon)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success btn-lg w-100 mb-3">
+        <i class="bi bi-check-circle"></i> Place Order
+      </button>
+      <a href="{% url 'cart' %}" class="btn btn-outline-secondary w-100">
+        <i class="bi bi-arrow-left"></i> Back to Cart
+      </a>
+    </form>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card sticky-top" style="top: 20px;">
+      <div class="card-body">
+        <h5><i class="bi bi-receipt"></i> Order Summary</h5>
+        <hr>
+        
+        <div class="mb-3" style="max-height: 300px; overflow-y: auto;">
+          {% for item in cart_items %}
+          <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+            <div>
+              <div class="small fw-bold">{{ item.product.title }}</div>
+              <div class="text-secondary small">Qty: {{ item.quantity }}</div>
+            </div>
+            <div class="price-tag small">₹{{ item.get_subtotal }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subtotal:</span>
+          <span>₹{{ cart.get_total }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Shipping:</span>
+          <span class="text-success">FREE</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between mb-3">
+          <strong>Total:</strong>
+          <strong class="price-tag" style="font-size: 1.5rem;">₹{{ cart.get_total }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+  const btn = this.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+});
+</script>
+{% endblock %}

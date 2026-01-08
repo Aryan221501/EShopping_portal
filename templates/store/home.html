@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1><i class="bi bi-grid-3x3-gap"></i> Featured Products</h1>
+  <div>
+    <select class="form-select" id="category-filter">
+      <option value="">All Categories</option>
+    </select>
+  </div>
+</div>
+<div class="row" id="products-container">
+  {% for p in products %}
+  <div class="col-lg-3 col-md-4 col-sm-6 mb-4 product-item" data-category="{{ p.category.slug }}">
+    <div class="card">
+      <div class="card-body">
+        <span class="category-badge">{{ p.category.name }}</span>
+        <h5 class="card-title mt-2">{{ p.title }}</h5>
+        <p class="card-text">{{ p.description|truncatechars:80 }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="price-tag">₹{{ p.price }}</span>
+          <a href="{% url 'product_detail' p.pk %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-eye"></i> View
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12">
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle"></i> No products yet. Run: <code>python manage.py populate_products</code>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<button class="btn btn-outline-primary load-more-btn" id="load-more-btn" style="display: none;">
+  <i class="bi bi-arrow-down-circle"></i> Load More Products
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let currentPage = 1;
+  let isLoading = false;
+  let hasMore = true;
+
+  // Load categories for filter
+  fetch('/api/categories/')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('category-filter');
+      data.categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.slug;
+        option.textContent = cat.name;
+        select.appendChild(option);
+      });
+    });
+
+  // Category filter - lag-free version
+  document.getElementById('category-filter').addEventListener('change', function() {
+    const category = this.value;
+    const products = document.querySelectorAll('.product-item');
+    
+    products.forEach((product) => {
+      const shouldShow = !category || product.dataset.category === category;
+      
+      if (shouldShow) {
+        product.style.display = 'block';
+        product.style.opacity = '1';
+      } else {
+        product.style.display = 'none';
+      }
+    });
+  });
+
+  // Load more products with AJAX
+  document.getElementById('load-more-btn').addEventListener('click', function() {
+    if (isLoading || !hasMore) return;
+    
+    isLoading = true;
+    currentPage++;
+    document.getElementById('loading-spinner').style.display = 'block';
+    
+    fetch(`/api/products/?page=${currentPage}`)
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('products-container');
+        
+        // Collect all new products first
+        const newProducts = [];
+        data.products.forEach((p) => {
+          const col = document.createElement('div');
+          col.className = 'col-lg-3 col-md-4 col-sm-6 mb-4 product-item';
+          col.dataset.category = p.category_slug;
+          col.style.opacity = '1'; // Ensure visible
+          col.innerHTML = `
+            <div class="card">
+              <div class="card-body">
+                <span class="category-badge">${p.category_name}</span>
+                <h5 class="card-title mt-2">${p.title}</h5>
+                <p class="card-text">${p.description.substring(0, 80)}...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="price-tag">₹${p.price}</span>
+                  <a href="/product/${p.id}/" class="btn btn-primary btn-sm">
+                    <i class="bi bi-eye"></i> View
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(col);
+          newProducts.push(col);
+        });
+        
+        // Simple fade-in for new products
+        newProducts.forEach((product, index) => {
+          product.style.opacity = '0';
+          setTimeout(() => {
+            product.style.opacity = '1';
+          }, index * 50);
+        });
+        
+        hasMore = data.has_more;
+        if (!hasMore) {
+          document.getElementById('load-more-btn').style.display = 'none';
+        }
+        
+        isLoading = false;
+        document.getElementById('loading-spinner').style.display = 'none';
+      })
+      .catch(err => {
+        console.error('Error loading products:', err);
+        isLoading = false;
+        document.getElementById('loading-spinner').style.display = 'none';
+      });
+  });
+
+  // Show load more button if there are products
+  if (document.querySelectorAll('.product-item').length >= 24) {
+    document.getElementById('load-more-btn').style.display = 'block';
+  }
+</script>
+{% endblock %}

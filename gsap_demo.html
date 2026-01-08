@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Animations Demo - AI E-Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --accent-color: #58a6ff;
+        }
+        body {
+            background-color: var(--bg-primary);
+            color: #c9d1d9;
+            padding: 2rem;
+        }
+        .demo-box {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--accent-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .animated-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid #30363d;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .btn-demo {
+            background-color: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">🎬 GSAP Animations Demo</h1>
+        <p class="text-center text-secondary mb-5">
+            All animations powered by GSAP (GreenSock Animation Platform)
+        </p>
+
+        <!-- Demo 1: Basic Animation -->
+        <div class="demo-box">
+            <h3>1. Basic GSAP Animation</h3>
+            <p class="text-secondary">gsap.to() - Animate to values</p>
+            <button class="btn-demo" onclick="demo1()">Play Animation</button>
+            <div class="animated-card" id="card1">
+                <h5>Animated Card</h5>
+                <p>Watch me move!</p>
+            </div>
+        </div>
+
+        <!-- Demo 2: From Animation -->
+        <div class="demo-box">
+            <h3>2. GSAP From Animation</h3>
+            <p class="text-secondary">gsap.from() - Animate from values</p>
+            <button class="btn-demo" onclick="demo2()">Play Animation</button>
+            <div class="animated-card" id="card2">
+                <h5>Fade In Card</h5>
+                <p>I fade in from invisible!</p>
+            </div>
+        </div>
+
+        <!-- Demo 3: Timeline -->
+        <div class="demo-box">
+            <h3>3. GSAP Timeline</h3>
+            <p class="text-secondary">gsap.timeline() - Sequence animations</p>
+            <button class="btn-demo" onclick="demo3()">Play Sequence</button>
+            <div class="animated-card" id="card3">
+                <h5>Timeline Card</h5>
+                <p>Watch the sequence!</p>
+            </div>
+        </div>
+
+        <!-- Demo 4: Stagger -->
+        <div class="demo-box">
+            <h3>4. GSAP Stagger</h3>
+            <p class="text-secondary">stagger - Animate multiple elements in sequence</p>
+            <button class="btn-demo" onclick="demo4()">Play Stagger</button>
+            <div>
+                <div class="animated-card stagger-card">Card 1</div>
+                <div class="animated-card stagger-card">Card 2</div>
+                <div class="animated-card stagger-card">Card 3</div>
+                <div class="animated-card stagger-card">Card 4</div>
+            </div>
+        </div>
+
+        <!-- Demo 5: Easing -->
+        <div class="demo-box">
+            <h3>5. GSAP Easing Functions</h3>
+            <p class="text-secondary">Different easing for different feels</p>
+            <button class="btn-demo" onclick="demo5('power2.out')">Power2</button>
+            <button class="btn-demo" onclick="demo5('elastic.out(1, 0.5)')">Elastic</button>
+            <button class="btn-demo" onclick="demo5('back.out(1.7)')">Back</button>
+            <div class="animated-card" id="card5">
+                <h5>Easing Card</h5>
+                <p>Different easing!</p>
+            </div>
+        </div>
+
+        <!-- Demo 6: ScrollTrigger -->
+        <div class="demo-box">
+            <h3>6. GSAP ScrollTrigger</h3>
+            <p class="text-secondary">Scroll down to see animation</p>
+            <div style="height: 300px;"></div>
+            <div class="animated-card scroll-card">
+                <h5>Scroll Card</h5>
+                <p>I animate on scroll!</p>
+            </div>
+            <div style="height: 300px;"></div>
+        </div>
+
+        <!-- Demo 7: Badge Bounce -->
+        <div class="demo-box">
+            <h3>7. Cart Badge Animation (Your Site)</h3>
+            <p class="text-secondary">Actual animation from your e-shop</p>
+            <button class="btn-demo" onclick="demo7()">
+                Cart <span class="badge bg-danger" id="demo-badge">3</span>
+            </button>
+        </div>
+
+        <!-- Demo 8: Button Press -->
+        <div class="demo-box">
+            <h3>8. Button Press Animation (Your Site)</h3>
+            <p class="text-secondary">Add to cart animation</p>
+            <button class="btn-demo" id="add-to-cart-btn" onclick="demo8()">
+                Add to Cart
+            </button>
+        </div>
+
+        <!-- Info -->
+        <div class="demo-box">
+            <h3>✅ GSAP Features Used</h3>
+            <ul>
+                <li><strong>gsap.to()</strong> - Animate to values</li>
+                <li><strong>gsap.from()</strong> - Animate from values</li>
+                <li><strong>gsap.timeline()</strong> - Sequence animations</li>
+                <li><strong>stagger</strong> - Delay between elements</li>
+                <li><strong>ease</strong> - Easing functions</li>
+                <li><strong>ScrollTrigger</strong> - Scroll-based animations</li>
+                <li><strong>onComplete</strong> - Callbacks</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Demo 1: Basic Animation
+        function demo1() {
+            gsap.to('#card1', {
+                x: 200,
+                rotation: 360,
+                duration: 1,
+                ease: 'power2.out',
+                onComplete: () => {
+                    gsap.to('#card1', { x: 0, rotation: 0, duration: 0.5 });
+                }
+            });
+        }
+
+        // Demo 2: From Animation
+        function demo2() {
+            gsap.from('#card2', {
+                opacity: 0,
+                y: 50,
+                scale: 0.5,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+        }
+
+        // Demo 3: Timeline
+        function demo3() {
+            gsap.timeline()
+                .to('#card3', { scale: 1.2, duration: 0.3 })
+                .to('#card3', { rotation: 180, duration: 0.5 })
+                .to('#card3', { scale: 1, rotation: 0, duration: 0.5 });
+        }
+
+        // Demo 4: Stagger
+        function demo4() {
+            gsap.from('.stagger-card', {
+                opacity: 0,
+                y: 50,
+                scale: 0.8,
+                duration: 0.6,
+                stagger: 0.15,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        // Demo 5: Easing
+        function demo5(easing) {
+            gsap.to('#card5', {
+                x: 300,
+                duration: 1,
+                ease: easing,
+                onComplete: () => {
+                    gsap.to('#card5', { x: 0, duration: 0.5 });
+                }
+            });
+        }
+
+        // Demo 6: ScrollTrigger
+        gsap.from('.scroll-card', {
+            scrollTrigger: {
+                trigger: '.scroll-card',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse',
+                markers: true
+            },
+            opacity: 0,
+            y: 100,
+            scale: 0.5,
+            duration: 1,
+            ease: 'power2.out'
+        });
+
+        // Demo 7: Badge Bounce (from your site)
+        function demo7() {
+            const badge = document.getElementById('demo-badge');
+            const currentValue = parseInt(badge.textContent);
+            badge.textContent = currentValue + 1;
+
+            gsap.timeline()
+                .to(badge, { scale: 1.5, duration: 0.2 })
+                .to(badge, { scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.5)' });
+        }
+
+        // Demo 8: Button Press (from your site)
+        function demo8() {
+            const btn = document.getElementById('add-to-cart-btn');
+            const originalText = btn.textContent;
+
+            gsap.timeline()
+                .to(btn, { scale: 0.95, duration: 0.1 })
+                .to(btn, { scale: 1.05, duration: 0.2, ease: 'back.out(1.5)' })
+                .to(btn, { scale: 1, duration: 0.2 })
+                .call(() => {
+                    btn.textContent = '✓ Added!';
+                    btn.style.backgroundColor = '#3fb950';
+                })
+                .to(btn, {
+                    duration: 0.5,
+                    delay: 1,
+                    onComplete: () => {
+                        btn.textContent = originalText;
+                        btn.style.backgroundColor = '#58a6ff';
+                    }
+                });
+        }
+
+        // Page entrance
+        gsap.from('h1', {
+            opacity: 0,
+            y: -50,
+            duration: 1,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.demo-box', {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power2.out',
+            delay: 0.3
+        });
+    </script>
+</body>
+</html>

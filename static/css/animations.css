@@ -1,0 +1,830 @@
+/* Premium Anime.js Animations CSS */
+
+/* Minimal effects only */
+
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================
+   CARD EFFECTS (3D removed for better performance)
+   ============================================ */
+.card {
+  position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(88, 166, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+  z-index: 1;
+}
+
+.card:hover::before {
+  left: 100%;
+}
+
+/* Glow Effects */
+.card:hover {
+  box-shadow: 0 0 30px rgba(88, 166, 255, 0.3),
+              0 0 60px rgba(88, 166, 255, 0.1);
+}
+
+.btn:hover {
+  box-shadow: 0 5px 20px rgba(88, 166, 255, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(88, 166, 255, 0.5);
+}
+
+/* Animated Gradient Background */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.navbar {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary),
+    var(--bg-tertiary),
+    var(--bg-secondary)
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.category-badge {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.price-tag {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(88, 166, 255, 0.1),
+    transparent
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Slide In Animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1, h2, h3 {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+/* Loading Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Button Press Effect */
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* Smooth Transitions */
+.btn, .card, .form-control, .badge {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Parallax Elements */
+.product-item {
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* ============================================
+   PARTICLE EFFECTS
+   ============================================ */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, var(--accent-color), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  will-change: transform, opacity;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Scroll Fade In */
+.fade-in-scroll {
+  opacity: 0;
+}
+
+.fade-in-scroll.animated {
+  opacity: 1;
+}
+
+/* Hover Lift Effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Text Glow */
+.text-glow {
+  text-shadow: 0 0 10px var(--accent-color),
+               0 0 20px var(--accent-color),
+               0 0 30px var(--accent-color);
+}
+
+/* Border Animation */
+@keyframes borderPulse {
+  0%, 100% {
+    border-color: var(--border-color);
+  }
+  50% {
+    border-color: var(--accent-color);
+  }
+}
+
+.card:hover {
+  animation: borderPulse 2s ease-in-out infinite;
+}
+
+/* Scale on Hover */
+.scale-hover {
+  transition: transform 0.3s ease;
+}
+
+.scale-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Rotate on Hover */
+.rotate-hover {
+  transition: transform 0.3s ease;
+}
+
+.rotate-hover:hover {
+  transform: rotate(5deg);
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* Shake Animation */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--accent-color),
+    var(--success-color)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon Glow */
+.neon-glow {
+  box-shadow: 0 0 5px var(--accent-color),
+              0 0 10px var(--accent-color),
+              0 0 20px var(--accent-color),
+              0 0 40px var(--accent-color);
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Stagger Animation Classes */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Responsive Animations */
+@media (max-width: 768px) {
+  /* Disable cursor effects on mobile */
+  #cursor-dot, #cursor-outline {
+    display: none;
+  }
+  
+  body, a, button {
+    cursor: auto;
+  }
+  
+  /* Reduce animation intensity on mobile */
+  .card {
+    transform: none !important;
+  }
+  
+  .particle {
+    display: none;
+  }
+}
+
+/* Accessibility - Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  #cursor-dot, #cursor-outline, .particle {
+    display: none;
+  }
+}
+
+
+/* ============================================
+   THREE.JS & GSAP ENHANCEMENTS
+   ============================================ */
+
+/* Three.js background canvas */
+#three-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* GSAP Loader */
+.gsap-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 2rem;
+}
+
+.loader-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Ultra-fast card effects */
+.card {
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.2s ease;
+}
+
+/* Smooth transitions for GSAP animations */
+.gsap-animated {
+  will-change: transform, opacity;
+}
+
+/* Enhanced button effects */
+.btn {
+  will-change: transform, background-color;
+  transform-origin: center;
+}
+
+/* Badge animations */
+.badge, .category-badge {
+  will-change: transform;
+  display: inline-block;
+}
+
+/* Price tag animations */
+.price-tag {
+  will-change: transform;
+  display: inline-block;
+}
+
+/* Search results container */
+#search-results {
+  will-change: opacity;
+}
+
+/* Cart item animations */
+.cart-item {
+  will-change: transform, opacity;
+}
+
+/* Product card animations */
+.product-item {
+  will-change: transform, opacity;
+}
+
+/* Message bubble animations */
+.message-bubble {
+  will-change: transform, opacity;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced gradient backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
+  animation: rotate-gradient 20s linear infinite;
+}
+
+@keyframes rotate-gradient {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Glass morphism effect */
+.glass-card {
+  background: rgba(22, 27, 34, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Neon glow effect */
+.neon-border {
+  border: 2px solid var(--accent-color);
+  box-shadow: 
+    0 0 5px var(--accent-color),
+    0 0 10px var(--accent-color),
+    inset 0 0 5px var(--accent-color);
+}
+
+/* Animated underline */
+.animated-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* Pulse animation for important elements */
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--accent-color);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--accent-color), 0 0 30px var(--accent-color);
+  }
+}
+
+/* Shimmer loading effect */
+.shimmer-loading {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #three-background {
+    display: none;
+  }
+  
+  .gsap-loader {
+    padding: 1rem;
+  }
+  
+  .loader-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  #three-background,
+  .gsap-loader,
+  .pulse-glow,
+  .shimmer-loading {
+    animation: none !important;
+  }
+  
+  .gradient-bg::before {
+    animation: none !important;
+  }
+}
+
+
+/* ============================================
+   SCROLL PROGRESS INDICATOR
+   ============================================ */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(48, 54, 61, 0.5);
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-color), #3fb950);
+  box-shadow: 0 0 10px var(--accent-color);
+  transition: width 0.1s ease-out;
+}
+
+/* ============================================
+   SCROLL-TRIGGERED ANIMATIONS
+   ============================================ */
+
+/* Fade in from bottom */
+.scroll-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Fade in from left */
+.scroll-fade-left {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* Fade in from right */
+.scroll-fade-right {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* Scale up on scroll */
+.scroll-scale {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* Rotate in on scroll */
+.scroll-rotate {
+  opacity: 0;
+  transform: rotate(-10deg);
+}
+
+/* Parallax layers */
+.parallax-slow {
+  will-change: transform;
+}
+
+.parallax-medium {
+  will-change: transform;
+}
+
+.parallax-fast {
+  will-change: transform;
+}
+
+/* Reveal animation */
+.reveal-text {
+  overflow: hidden;
+}
+
+.reveal-text span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+/* Sticky elements */
+.sticky-element {
+  position: sticky;
+  top: 80px;
+  z-index: 10;
+}
+
+/* Pin spacer fix */
+.pin-spacer {
+  display: block !important;
+}
+
+/* Smooth scroll snap */
+.scroll-snap-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+.scroll-snap-section {
+  scroll-snap-align: start;
+  min-height: 100vh;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.scroll-indicator:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(88, 166, 255, 0.4);
+}
+
+/* Animated underline on scroll */
+.scroll-underline {
+  position: relative;
+}
+
+.scroll-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: width 0.5s ease;
+}
+
+.scroll-underline.active::after {
+  width: 100%;
+}
+
+/* Blur on scroll */
+.blur-on-scroll {
+  transition: filter 0.3s ease;
+}
+
+.blur-on-scroll.blurred {
+  filter: blur(5px);
+}
+
+/* Zoom on scroll */
+.zoom-on-scroll {
+  transition: transform 0.3s ease;
+}
+
+.zoom-on-scroll.zoomed {
+  transform: scale(1.05);
+}
+
+/* Color change on scroll */
+.color-on-scroll {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Stagger reveal */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* ScrollTrigger markers (for debugging) */
+.gsap-marker-scroller-start,
+.gsap-marker-scroller-end,
+.gsap-marker-start,
+.gsap-marker-end {
+  display: none; /* Hide in production */
+}
+
+/* ============================================
+   RESPONSIVE SCROLL ANIMATIONS
+   ============================================ */
+@media (max-width: 768px) {
+  .scroll-progress-container {
+    height: 2px;
+  }
+  
+  .scroll-indicator {
+    width: 40px;
+    height: 40px;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  
+  /* Reduce parallax on mobile */
+  .parallax-slow,
+  .parallax-medium,
+  .parallax-fast {
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-fade-up,
+  .scroll-fade-left,
+  .scroll-fade-right,
+  .scroll-scale,
+  .scroll-rotate,
+  .stagger-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .scroll-progress-container,
+  .scroll-indicator {
+    display: none !important;
+  }
+  
+  .parallax-slow,
+  .parallax-medium,
+  .parallax-fast {
+    transform: none !important;
+  }
+}

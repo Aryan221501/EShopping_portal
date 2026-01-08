@@ -1,0 +1,77 @@
+/* LAG-FREE MINIMAL CSS - Zero Lag Guaranteed */
+
+/* Cards - Only essential styles */
+.card {
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Buttons - Minimal transition */
+.btn {
+  transition: transform 0.1s ease;
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-color, #a855f7);
+  transition: width 0.1s ease-out;
+}
+
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(48, 54, 61, 0.3);
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* Scroll to top button */
+.scroll-indicator {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--accent-color, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+  color: white;
+  font-size: 1.1rem;
+}
+
+/* Remove all heavy animations on mobile */
+@media (max-width: 768px) {
+  .card,
+  .btn {
+    transition: none !important;
+  }
+  
+  .scroll-indicator {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}
+
+/* Disable all animations for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

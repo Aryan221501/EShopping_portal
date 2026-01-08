@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <div class="mb-4">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        </div>
+        <h2 class="mb-3">Order Placed Successfully!</h2>
+        <p class="text-secondary mb-4">Thank you for your order. We'll send you a confirmation email shortly.</p>
+        
+        <div class="alert alert-info d-inline-block">
+          <strong>Order Number:</strong> <span class="text-primary">{{ order.order_number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5><i class="bi bi-info-circle"></i> Order Details</h5>
+        <hr>
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <h6>Customer Information</h6>
+            <p class="mb-1"><strong>Name:</strong> {{ order.full_name }}</p>
+            <p class="mb-1"><strong>Email:</strong> {{ order.email }}</p>
+            <p class="mb-1"><strong>Phone:</strong> {{ order.phone }}</p>
+          </div>
+          <div class="col-md-6">
+            <h6>Shipping Address</h6>
+            <p class="mb-1">{{ order.address }}</p>
+            <p class="mb-1">{{ order.city }}, {{ order.postal_code }}</p>
+          </div>
+        </div>
+
+        <h6 class="mt-4">Order Items</h6>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.items.all %}
+              <tr>
+                <td>{{ item.product_title }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-end">₹{{ item.product_price }}</td>
+                <td class="text-end price-tag">₹{{ item.get_subtotal }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td class="text-end"><strong class="price-tag" style="font-size: 1.3rem;">₹{{ order.total_amount }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="alert alert-success mt-4">
+          <i class="bi bi-truck"></i> <strong>Estimated Delivery:</strong> 3-5 business days
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+      <a href="/" class="btn btn-primary btn-lg">
+        <i class="bi bi-shop"></i> Continue Shopping
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-robot" style="font-size: 5rem; color: var(--text-secondary);"></i>
+        <h2 class="mt-4">AI Features Not Available</h2>
+        <p class="text-secondary mb-4">
+          AI chatbot and advanced recommendations require additional packages to be installed.
+        </p>
+        
+        <div class="alert alert-info text-start">
+          <h5><i class="bi bi-info-circle"></i> How to Enable AI Features</h5>
+          <p class="mb-2">Run the following command in your terminal:</p>
+          <div class="bg-dark p-3 rounded mb-3">
+            <code style="color: #58a6ff;">install_ai.bat</code>
+            <span class="text-secondary ms-2">(Windows)</span>
+          </div>
+          <p class="mb-2">Or manually install:</p>
+          <div class="bg-dark p-3 rounded">
+            <code style="color: #58a6ff;">pip install torch transformers sentence-transformers scikit-learn numpy</code>
+          </div>
+        </div>
+
+        <div class="alert alert-warning text-start">
+          <strong><i class="bi bi-download"></i> Note:</strong> This will download approximately 500MB of AI models.
+          Installation takes 5-10 minutes.
+        </div>
+
+        <h5 class="mt-4">What You'll Get:</h5>
+        <div class="row text-start mt-3">
+          <div class="col-md-6">
+            <ul>
+              <li><i class="bi bi-robot text-primary"></i> AI Chatbot for customer support</li>
+              <li><i class="bi bi-stars text-primary"></i> Advanced product recommendations</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul>
+              <li><i class="bi bi-fire text-primary"></i> Trending products analysis</li>
+              <li><i class="bi bi-search text-primary"></i> Semantic search</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <a href="/" class="btn btn-primary">
+            <i class="bi bi-house"></i> Back to Home
+          </a>
+          <a href="/admin/" class="btn btn-outline-secondary">
+            <i class="bi bi-gear"></i> Admin Panel
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5><i class="bi bi-question-circle"></i> Frequently Asked Questions</h5>
+        <hr>
+        
+        <div class="mb-3">
+          <strong>Q: Is it free?</strong>
+          <p class="text-secondary mb-0">Yes! All AI features use free, open-source models. No API keys or monthly fees.</p>
+        </div>
+
+        <div class="mb-3">
+          <strong>Q: How much space does it need?</strong>
+          <p class="text-secondary mb-0">Approximately 500MB for models and 1.5GB RAM when running.</p>
+        </div>
+
+        <div class="mb-3">
+          <strong>Q: Can I use the site without AI?</strong>
+          <p class="text-secondary mb-0">Yes! All core features (shopping, cart, checkout) work without AI. AI just adds extra features.</p>
+        </div>
+
+        <div>
+          <strong>Q: Need help?</strong>
+          <p class="text-secondary mb-0">Check <code>AI_README.md</code> or <code>TROUBLESHOOTING.md</code> in the project folder.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

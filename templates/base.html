@@ -1,0 +1,258 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI E-Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/minimal-animations.css' %}">
+    <style>
+      :root {
+        --bg-primary: #0d1117;
+        --bg-secondary: #161b22;
+        --bg-tertiary: #21262d;
+        --text-primary: #c9d1d9;
+        --text-secondary: #8b949e;
+        --border-color: #30363d;
+        --accent-color: #a855f7;
+        --accent-hover: #7c3aed;
+      }
+      
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+      }
+      
+      .navbar {
+        background-color: var(--bg-secondary) !important;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 0;
+      }
+      
+      .navbar-brand {
+        color: var(--accent-color) !important;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+      
+      .card {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        height: 100%;
+      }
+      
+      .card-title {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+      
+      .card-text {
+        color: var(--text-secondary);
+      }
+      
+      .btn-primary {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+      
+      .form-control {
+        background-color: var(--bg-tertiary);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+      }
+      
+      .form-control:focus {
+        background-color: var(--bg-tertiary);
+        border-color: var(--accent-color);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 0.25rem rgba(168, 85, 247, 0.25);
+      }
+      
+      .price-tag {
+        color: #3fb950;
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+      
+      .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+      }
+      
+      .category-badge {
+        background-color: var(--bg-tertiary);
+        color: var(--accent-color);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.85rem;
+      }
+      
+      #search-results {
+        position: absolute;
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      
+      .search-result-item {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+      }
+      
+      .search-result-item:hover {
+        background-color: var(--bg-tertiary);
+      }
+      
+      .load-more-btn {
+        margin: 2rem auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress-container">
+    <div class="progress-bar"></div>
+  </div>
+  
+  <!-- Scroll to Top Button -->
+  <div class="scroll-indicator" id="scroll-to-top">
+    <i class="bi bi-arrow-up"></i>
+  </div>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-shop"></i> AI E-Shop
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'trending' %}">
+              <i class="bi bi-fire"></i> Trending
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'chatbot' %}">
+              <i class="bi bi-robot"></i> AI Assistant
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link position-relative" href="{% url 'cart' %}" id="cart-link">
+              <i class="bi bi-cart3"></i> Cart
+              <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="cart-badge" style="display: none;">0</span>
+            </a>
+          </li>
+        </ul>
+        <form class="d-flex ms-3 position-relative" id="search-form">
+          <input class="form-control me-2" id="search-input" name="q" placeholder="Search products..." autocomplete="off">
+          <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+          <div id="search-results"></div>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    {% block content %}{% endblock %}
+  </div>
+  <div class="loading-spinner" id="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Lag-free animations -->
+  <script src="{% static 'js/lag-free-animations.js' %}"></script>
+  <script>
+    // Update cart count on page load
+    fetch('/api/cart/count/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.count > 0) {
+          const badge = document.getElementById('cart-badge');
+          badge.textContent = data.count;
+          badge.style.display = 'inline-block';
+          
+          // Animate cart badge
+          if (typeof window.lagFreeAnimations !== 'undefined') {
+            window.lagFreeAnimations.cartBadge(badge);
+          }
+        }
+      });
+
+    // AJAX Search with live suggestions
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      const query = this.value.trim();
+      
+      if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+      }
+
+      searchTimeout = setTimeout(() => {
+        fetch(`/api/search/?q=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.products.length > 0) {
+              searchResults.innerHTML = data.products.map(p => `
+                <div class="search-result-item" onclick="window.location.href='/product/${p.id}/'">
+                  <strong>${p.title}</strong>
+                  <div class="text-secondary small">${p.description.substring(0, 60)}...</div>
+                  <div class="price-tag small">₹${p.price}</div>
+                </div>
+              `).join('');
+              searchResults.style.display = 'block';
+            } else {
+              searchResults.style.display = 'none';
+            }
+          })
+          .catch(err => console.error('Search error:', err));
+      }, 300);
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
+
+    // Prevent form submission, use AJAX instead
+    document.getElementById('search-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+  </body>
+</html>

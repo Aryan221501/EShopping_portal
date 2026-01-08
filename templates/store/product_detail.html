@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-body">
+        <span class="category-badge mb-3">{{ product.category.name }}</span>
+        <h2 class="mt-3">{{ product.title }}</h2>
+        <p class="text-secondary">{{ product.description }}</p>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <div class="price-tag" style="font-size: 2rem;">₹{{ product.price }}</div>
+          <div>
+            <button class="btn btn-success btn-lg" onclick="addToCart({{ product.pk }})">
+              <i class="bi bi-cart-plus"></i> Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4><i class="bi bi-info-circle"></i> Detailed Product Information</h4>
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Category:</strong> {{ product.category.name }}</p>
+            <p><strong>Added:</strong> {{ product.created_at|date:"F d, Y" }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Product ID:</strong> #{{ product.id }}</p>
+          </div>
+        </div>
+
+        <h5 class="mt-4">Features & Specifications</h5>
+        <div class="features-list">
+          {% if 'wireless' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Wireless connectivity for convenience and freedom of movement</span>
+            </div>
+          {% endif %}
+          {% if 'waterproof' in product.description|lower or 'water-resistant' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Waterproof/Water-resistant design for outdoor and active use</span>
+            </div>
+          {% endif %}
+          {% if 'battery' in product.description|lower or 'long battery' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Extended battery life for all-day usage</span>
+            </div>
+          {% endif %}
+          {% if 'adjustable' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Adjustable settings for personalized experience</span>
+            </div>
+          {% endif %}
+          {% if 'fast charging' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Fast charging technology to keep you powered up</span>
+            </div>
+          {% endif %}
+          {% if 'ergonomic' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Ergonomic design for comfort during extended use</span>
+            </div>
+          {% endif %}
+          {% if 'high-quality' in product.description|lower or 'premium' in product.description|lower %}
+            <div class="d-flex mb-2">
+              <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+              <span>Premium materials for durability and performance</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <h5 class="mt-4">Product Description</h5>
+        <p>{{ product.description }}</p>
+
+        {% if 'ideal for' in product.description or 'perfect for' in product.description or 'great for' in product.description %}
+        <h5 class="mt-4">Who is this for?</h5>
+        <p>
+          {% if 'beginners' in product.description|lower %}Perfect for beginners looking to get started in their journey.{% endif %}
+          {% if 'professional' in product.description|lower %}Designed for professionals who demand high performance.{% endif %}
+          {% if 'students' in product.description|lower %}Great for students seeking quality and affordability.{% endif %}
+          {% if 'athletes' in product.description|lower or 'fitness' in product.description|lower %}Ideal for athletes and fitness enthusiasts.{% endif %}
+          {% if 'home' in product.description|lower and 'use' in product.description|lower %}Perfect for home use with family and friends.{% endif %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5><i class="bi bi-lightbulb"></i> AI Recommendations</h5>
+        <p class="text-secondary small">Products similar to this one</p>
+        <div id="recommendations-container">
+          <div class="text-center">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'recommend' product.pk %}" class="btn btn-outline-primary btn-sm w-100 mt-3">
+          View All Recommendations
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5><i class="bi bi-shield-check"></i> Why Buy From Us?</h5>
+        <ul class="list-unstyled mt-3">
+          <li class="mb-2"><i class="bi bi-truck text-success"></i> Free shipping on orders over ₹999</li>
+          <li class="mb-2"><i class="bi bi-arrow-repeat text-success"></i> 30-day money-back guarantee</li>
+          <li class="mb-2"><i class="bi bi-shield-shaded text-success"></i> 1-year warranty included</li>
+          <li class="mb-2"><i class="bi bi-headset text-success"></i> 24/7 customer support</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Load advanced AI recommendations via AJAX
+  fetch('/api/recommend-advanced/{{ product.pk }}/')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('recommendations-container');
+      if (data.products.length > 0) {
+        container.innerHTML = data.products.slice(0, 3).map((p, index) => `
+          <div class="border-bottom pb-2 mb-2 recommendation-item" style="opacity: 0;">
+            <a href="/product/${p.id}/" class="text-decoration-none">
+              <div class="small fw-bold">${p.title}</div>
+              <div class="price-tag small">₹${p.price}</div>
+            </a>
+          </div>
+        `).join('');
+        
+        // Animate recommendations in with GSAP
+        if (typeof gsap !== 'undefined') {
+          gsap.from('.recommendation-item', {
+            opacity: 0,
+            x: -20,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: 'power2.out'
+          });
+        } else {
+          document.querySelectorAll('.recommendation-item').forEach(item => {
+            item.style.opacity = 1;
+          });
+        }
+      } else {
+        container.innerHTML = '<p class="text-secondary small">No recommendations available</p>';
+      }
+    })
+    .catch(err => {
+      console.error('Error loading recommendations:', err);
+      document.getElementById('recommendations-container').innerHTML =
+        '<p class="text-danger small">Failed to load recommendations</p>';
+    });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function addToCart(productId) {
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+    
+    // Button press animation with GSAP
+    if (typeof gsap !== 'undefined') {
+      gsap.timeline()
+        .to(btn, { scale: 0.9, duration: 0.1 })
+        .to(btn, { scale: 1.1, duration: 0.2 })
+        .to(btn, { scale: 1, duration: 0.2, ease: 'elastic.out(1, 0.5)' });
+    }
+
+    fetch(`/cart/add/${productId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        btn.innerHTML = '<i class="bi bi-check-circle"></i> Added to Cart!';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-success');
+        
+        // Success animation with GSAP
+        if (typeof gsap !== 'undefined') {
+          gsap.timeline()
+            .to(btn, {
+              scale: 1.15,
+              backgroundColor: '#3fb950',
+              duration: 0.3
+            })
+            .to(btn, {
+              scale: 1,
+              duration: 0.4,
+              ease: 'elastic.out(1, 0.6)'
+            });
+        }
+
+        // Update cart badge with animation
+        const badge = document.getElementById('cart-badge');
+        badge.textContent = data.cart_count;
+        badge.style.display = 'inline-block';
+        
+        if (typeof window.stableAnimations !== 'undefined') {
+          window.stableAnimations.badge(badge);
+        }
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('btn-outline-success');
+          btn.classList.add('btn-success');
+          btn.disabled = false;
+        }, 2000);
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      
+      // Error feedback
+      if (typeof gsap !== 'undefined') {
+        gsap.timeline()
+          .to(btn, { x: -5, duration: 0.1 })
+          .to(btn, { x: 5, duration: 0.1 })
+          .to(btn, { x: 0, duration: 0.1 });
+      }
+    });
+  }
+</script>
+{% endblock %}

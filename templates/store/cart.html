@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="bi bi-cart3"></i> Shopping Cart</h2>
+      <a href="/" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-arrow-left"></i> Continue Shopping
+      </a>
+    </div>
+
+    {% if cart_items %}
+    <div id="cart-items-container">
+      {% for item in cart_items %}
+      <div class="card mb-3 cart-item" id="cart-item-{{ item.id }}">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h5 class="card-title">{{ item.product.title }}</h5>
+              <span class="category-badge">{{ item.product.category.name }}</span>
+              <p class="text-secondary small mt-2">{{ item.product.description|truncatechars:100 }}</p>
+            </div>
+            <div class="col-md-2">
+              <div class="price-tag">₹{{ item.product.price }}</div>
+            </div>
+            <div class="col-md-2">
+              <div class="input-group input-group-sm">
+                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity({{ item.id }}, 'decrease')">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <input type="text" class="form-control text-center" value="{{ item.quantity }}" id="quantity-{{ item.id }}" readonly>
+                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity({{ item.id }}, 'increase')">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <strong class="price-tag" id="subtotal-{{ item.id }}">₹{{ item.get_subtotal }}</strong>
+                <button class="btn btn-sm btn-outline-danger" onclick="removeItem({{ item.id }})">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-cart-x" style="font-size: 4rem; color: var(--text-secondary);"></i>
+        <h4 class="mt-3">Your cart is empty</h4>
+        <p class="text-secondary">Add some products to get started!</p>
+        <a href="/" class="btn btn-primary mt-3">
+          <i class="bi bi-shop"></i> Browse Products
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if cart_items %}
+  <div class="col-lg-4">
+    <div class="card sticky-top" style="top: 20px;">
+      <div class="card-body">
+        <h5><i class="bi bi-receipt"></i> Order Summary</h5>
+        <hr>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Items:</span>
+          <span id="items-count">{{ cart.get_item_count }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+          <span>Subtotal:</span>
+          <span class="price-tag" id="cart-total">₹{{ cart.get_total }}</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between mb-3">
+          <strong>Total:</strong>
+          <strong class="price-tag" style="font-size: 1.5rem;" id="final-total">₹{{ cart.get_total }}</strong>
+        </div>
+        <a href="{% url 'checkout' %}" class="btn btn-success w-100 btn-lg">
+          <i class="bi bi-credit-card"></i> Proceed to Checkout
+        </a>
+        <a href="/" class="btn btn-outline-secondary w-100 mt-2">
+          <i class="bi bi-arrow-left"></i> Continue Shopping
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function updateQuantity(itemId, action) {
+  const formData = new FormData();
+  formData.append('action', action);
+  formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+  fetch(`/cart/update/${itemId}/`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      if (data.deleted) {
+        const item = document.getElementById(`cart-item-${itemId}`);
+        
+        // Animate removal with GSAP
+        if (typeof gsap !== 'undefined') {
+          gsap.to(item, {
+            x: -100,
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.4,
+            ease: 'power2.in',
+            onComplete: () => {
+              item.remove();
+              if (data.cart_count === 0) {
+                location.reload();
+              }
+            }
+          });
+        } else {
+          item.remove();
+          if (data.cart_count === 0) {
+            location.reload();
+          }
+        }
+      } else {
+        // Pulse animation on quantity change
+        const quantityInput = document.getElementById(`quantity-${itemId}`);
+        const subtotal = document.getElementById(`subtotal-${itemId}`);
+        
+        quantityInput.value = data.quantity;
+        subtotal.textContent = `₹${data.subtotal.toFixed(2)}`;
+        
+        if (typeof gsap !== 'undefined') {
+          gsap.timeline()
+            .to([quantityInput, subtotal], {
+              scale: 1.2,
+              duration: 0.2
+            })
+            .to([quantityInput, subtotal], {
+              scale: 1,
+              duration: 0.4,
+              ease: 'elastic.out(1, 0.5)'
+            });
+        }
+      }
+      
+      // Update totals with animation
+      const cartTotal = document.getElementById('cart-total');
+      const finalTotal = document.getElementById('final-total');
+      const itemsCount = document.getElementById('items-count');
+      const cartBadge = document.getElementById('cart-badge');
+      
+      cartTotal.textContent = `₹${data.cart_total.toFixed(2)}`;
+      finalTotal.textContent = `₹${data.cart_total.toFixed(2)}`;
+      itemsCount.textContent = data.cart_count;
+      cartBadge.textContent = data.cart_count;
+      
+      if (typeof gsap !== 'undefined') {
+        gsap.timeline()
+          .to([cartTotal, finalTotal], {
+            scale: 1.15,
+            color: '#3fb950',
+            duration: 0.3
+          })
+          .to([cartTotal, finalTotal], {
+            scale: 1,
+            color: '#3fb950',
+            duration: 0.4,
+            ease: 'elastic.out(1, 0.5)'
+          });
+      }
+      
+      // Animate cart badge
+      if (typeof window.stableAnimations !== 'undefined') {
+        window.stableAnimations.badge(cartBadge);
+      }
+    }
+  })
+  .catch(err => console.error('Error:', err));
+}
+
+function removeItem(itemId) {
+  if (!confirm('Remove this item from cart?')) return;
+
+  const item = document.getElementById(`cart-item-${itemId}`);
+  
+  // Shake animation before removal with GSAP
+  if (typeof gsap !== 'undefined') {
+    gsap.timeline()
+      .to(item, { x: -10, duration: 0.1 })
+      .to(item, { x: 10, duration: 0.1 })
+      .to(item, { x: -10, duration: 0.1 })
+      .to(item, { x: 0, duration: 0.1 });
+  }
+
+  fetch(`/cart/remove/${itemId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Animate removal with GSAP
+      if (typeof gsap !== 'undefined') {
+        gsap.to(item, {
+          x: 200,
+          opacity: 0,
+          rotation: 10,
+          duration: 0.5,
+          ease: 'power2.in',
+          onComplete: () => {
+            item.remove();
+            if (data.cart_count === 0) {
+              location.reload();
+            }
+          }
+        });
+      } else {
+        item.remove();
+        if (data.cart_count === 0) {
+          location.reload();
+        }
+      }
+      
+      if (data.cart_count > 0) {
+        document.getElementById('cart-total').textContent = `₹${data.cart_total.toFixed(2)}`;
+        document.getElementById('final-total').textContent = `₹${data.cart_total.toFixed(2)}`;
+        document.getElementById('items-count').textContent = data.cart_count;
+        document.getElementById('cart-badge').textContent = data.cart_count;
+        
+        // Animate cart badge
+        if (typeof window.stableAnimations !== 'undefined') {
+          window.stableAnimations.badge(document.getElementById('cart-badge'));
+        }
+      }
+    }
+  })
+  .catch(err => console.error('Error:', err));
+}
+</script>
+{% endblock %}

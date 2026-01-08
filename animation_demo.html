@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Demo - AI E-Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --accent-hover: #1f6feb;
+        }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .demo-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+        .price-tag {
+            color: #3fb950;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .category-badge {
+            background-color: var(--bg-tertiary);
+            color: var(--accent-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, var(--accent-color), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        .click-ripple {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.8) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4"><i class="bi bi-stars"></i> Premium Animation Demo</h1>
+        
+        <div class="demo-card">
+            <h3>1. Card Entrance Animations</h3>
+            <p class="text-secondary">Cards fade in with stagger effect</p>
+            <button class="btn btn-primary" onclick="demoCardEntrance()">
+                <i class="bi bi-play-fill"></i> Play Animation
+            </button>
+        </div>
+
+        <div class="row" id="card-container">
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="category-badge">Electronics</span>
+                        <h5 class="card-title mt-2">Wireless Headphones</h5>
+                        <p class="card-text">Premium sound quality</p>
+                        <div class="price-tag">₹2,999</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="category-badge">Fashion</span>
+                        <h5 class="card-title mt-2">Designer Watch</h5>
+                        <p class="card-text">Elegant timepiece</p>
+                        <div class="price-tag">₹4,999</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="category-badge">Sports</span>
+                        <h5 class="card-title mt-2">Yoga Mat</h5>
+                        <p class="card-text">Non-slip surface</p>
+                        <div class="price-tag">₹1,499</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="category-badge">Beauty</span>
+                        <h5 class="card-title mt-2">Skincare Set</h5>
+                        <p class="card-text">Complete routine</p>
+                        <div class="price-tag">₹3,499</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-card">
+            <h3>2. Button Animations</h3>
+            <p class="text-secondary">Interactive button effects</p>
+            <button class="btn btn-success btn-lg" onclick="demoButtonClick(event)">
+                <i class="bi bi-cart-plus"></i> Add to Cart (with particles!)
+            </button>
+        </div>
+
+        <div class="demo-card">
+            <h3>3. Badge Bounce</h3>
+            <p class="text-secondary">Cart badge animation</p>
+            <button class="btn btn-primary" onclick="demoBadgeBounce()">
+                <i class="bi bi-cart3"></i> Cart
+                <span class="badge bg-danger rounded-pill ms-2" id="demo-badge">3</span>
+            </button>
+        </div>
+
+        <div class="demo-card">
+            <h3>4. Shake Animation (Error)</h3>
+            <p class="text-secondary">Error feedback animation</p>
+            <button class="btn btn-danger" id="shake-btn" onclick="demoShake()">
+                <i class="bi bi-exclamation-triangle"></i> Shake Me!
+            </button>
+        </div>
+
+        <div class="demo-card">
+            <h3>5. Floating Badges</h3>
+            <p class="text-secondary">Continuous floating animation</p>
+            <span class="category-badge me-2">New</span>
+            <span class="category-badge me-2">Sale</span>
+            <span class="category-badge">Hot</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        // Demo functions
+        function demoCardEntrance() {
+            const cards = document.querySelectorAll('.card');
+            
+            // Reset
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(40px) scale(0.95)';
+            });
+            
+            // Animate
+            setTimeout(() => {
+                anime({
+                    targets: '.card',
+                    opacity: [0, 1],
+                    translateY: [40, 0],
+                    scale: [0.95, 1],
+                    duration: 600,
+                    easing: 'easeOutCubic',
+                    delay: anime.stagger(60)
+                });
+            }, 100);
+        }
+
+        function demoButtonClick(event) {
+            const btn = event.target.closest('button');
+            
+            // Button animation
+            anime({
+                targets: btn,
+                scale: [1, 0.9, 1.1, 1],
+                duration: 400,
+                easing: 'easeOutElastic(1, .5)'
+            });
+            
+            // Particle effect
+            const rect = btn.getBoundingClientRect();
+            createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            
+            // Success feedback
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check-circle"></i> Added!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        function demoBadgeBounce() {
+            const badge = document.getElementById('demo-badge');
+            const currentValue = parseInt(badge.textContent);
+            badge.textContent = currentValue + 1;
+            
+            anime({
+                targets: badge,
+                scale: [1, 1.3, 1],
+                duration: 500,
+                easing: 'easeOutElastic(1, .5)'
+            });
+        }
+
+        function demoShake() {
+            const btn = document.getElementById('shake-btn');
+            
+            anime({
+                targets: btn,
+                translateX: [
+                    { value: -10, duration: 100 },
+                    { value: 10, duration: 100 },
+                    { value: -10, duration: 100 },
+                    { value: 10, duration: 100 },
+                    { value: 0, duration: 100 }
+                ],
+                easing: 'easeInOutSine'
+            });
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                document.body.appendChild(particle);
+                
+                const angle = (Math.PI * 2 * i) / 8;
+                const velocity = 50;
+                
+                anime({
+                    targets: particle,
+                    translateX: Math.cos(angle) * velocity,
+                    translateY: Math.sin(angle) * velocity,
+                    opacity: [1, 0],
+                    scale: [1, 0],
+                    duration: 800,
+                    easing: 'easeOutCubic',
+                    complete: () => particle.remove()
+                });
+            }
+        }
+
+        // Click ripple effect
+        document.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            
+            anime({
+                targets: ripple,
+                scale: [0, 3],
+                opacity: [0.6, 0],
+                duration: 600,
+                easing: 'easeOutExpo',
+                complete: () => ripple.remove()
+            });
+        });
+
+        // Floating badges
+        anime({
+            targets: '.category-badge',
+            translateY: [
+                { value: -5, duration: 1000 },
+                { value: 0, duration: 1000 }
+            ],
+            loop: true,
+            easing: 'easeInOutSine',
+            delay: anime.stagger(200)
+        });
+
+        // Initial card entrance
+        window.addEventListener('load', () => {
+            setTimeout(demoCardEntrance, 500);
+        });
+    </script>
+</body>
+</html>
